@@ -217,10 +217,10 @@ app.post('/chat', (req, res) => {
           const avgUnits = billsToShow.reduce((sum, bill) => sum + bill.unitsConsumed, 0) / billsToShow.length;
           const avgAmount = billsToShow.reduce((sum, bill) => sum + bill.amount, 0) / billsToShow.length;
           
-          botReply = `Your latest ${utilitySpecific ? latestOfType.utilityType : ''} bill shows ${latestOfType.unitsConsumed} units consumed in ${latestOfType.month} ${latestOfType.year} for $${latestOfType.amount}.\n\n` +
+          botReply = `Your latest ${utilitySpecific ? latestOfType.utilityType : ''} bill shows ${latestOfType.unitsConsumed} units consumed in ${latestOfType.month} ${latestOfType.year} for ₹${latestOfType.amount}.\n\n` +
             `Average consumption: ${avgUnits.toFixed(1)} units\n` +
-            `Average amount: $${avgAmount.toFixed(2)}\n` +
-            `Cost per unit: $${(latestOfType.amount / latestOfType.unitsConsumed).toFixed(3)}`;
+            `Average amount: ₹${avgAmount.toFixed(2)}\n` +
+            `Cost per unit: ₹${(latestOfType.amount / latestOfType.unitsConsumed).toFixed(3)}`;
         } else {
           botReply = utilitySpecific ? `No bills found for that utility type.` : `I don't see any bills in your account yet. Add your first bill to get started! 📊`;
         }

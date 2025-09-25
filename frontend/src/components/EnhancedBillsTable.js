@@ -85,7 +85,7 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
 
   if (bills.length === 0) {
     return (
-      <div className="text-center text-gray-500 py-8">
+      <div className="text-center text-[#B3B3B3] py-8">
         No bills added yet. Add your first bill above!
       </div>
     );
@@ -95,51 +95,51 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
     <div className="space-y-4">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold text-blue-800">Total Bills</h3>
-          <p className="text-2xl font-bold text-blue-600">{bills.length}</p>
+        <div className="bg-[#121212] border border-[#B3B3B3] p-4 rounded-lg">
+          <h3 className="text-lg font-semibold text-white">Total Bills</h3>
+          <p className="text-2xl font-bold text-[#1DB954]">{bills.length}</p>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold text-green-800">Total Consumption</h3>
-          <p className="text-2xl font-bold text-green-600">{getTotalConsumption().toLocaleString()} units</p>
+        <div className="bg-[#121212] border border-[#B3B3B3] p-4 rounded-lg">
+          <h3 className="text-lg font-semibold text-white">Total Consumption</h3>
+          <p className="text-2xl font-bold text-[#1ED760]">{getTotalConsumption().toLocaleString()} units</p>
         </div>
-        <div className="bg-purple-50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold text-purple-800">Total Amount</h3>
-          <p className="text-2xl font-bold text-purple-600">${getTotalAmount().toFixed(2)}</p>
+        <div className="bg-[#121212] border border-[#B3B3B3] p-4 rounded-lg">
+          <h3 className="text-lg font-semibold text-white">Total Amount</h3>
+          <p className="text-2xl font-bold text-[#1AA34A]">₹{getTotalAmount().toFixed(2)}</p>
         </div>
       </div>
 
       {/* Bills Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-[#B3B3B3]">
+          <thead className="bg-[#191414]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#B3B3B3] uppercase tracking-wider">
                 Utility
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#B3B3B3] uppercase tracking-wider">
                 Month
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#B3B3B3] uppercase tracking-wider">
                 Year
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#B3B3B3] uppercase tracking-wider">
                 Units
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#B3B3B3] uppercase tracking-wider">
                 Amount
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#B3B3B3] uppercase tracking-wider">
                 Cost/Unit
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#B3B3B3] uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-[#121212] divide-y divide-[#B3B3B3]">
             {bills.map((bill) => (
-              <tr key={bill.id} className="hover:bg-gray-50">
+              <tr key={bill.id} className="hover:bg-[#191414]">
                 {editingBill === bill.id ? (
                   <>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -147,7 +147,7 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
                         name="utilityType"
                         value={editForm.utilityType}
                         onChange={handleEditChange}
-                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        className="w-full px-2 py-1 border border-[#B3B3B3] bg-[#121212] text-white rounded text-sm focus:ring-[#1DB954] focus:border-[#1DB954]"
                       >
                         {utilityTypes.map(type => (
                           <option key={type.value} value={type.value}>
@@ -161,7 +161,7 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
                         name="month"
                         value={editForm.month}
                         onChange={handleEditChange}
-                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        className="w-full px-2 py-1 border border-[#B3B3B3] bg-[#121212] text-white rounded text-sm focus:ring-[#1DB954] focus:border-[#1DB954]"
                       >
                         {months.map(month => (
                           <option key={month} value={month}>{month}</option>
@@ -174,7 +174,7 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
                         name="year"
                         value={editForm.year}
                         onChange={handleEditChange}
-                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        className="w-full px-2 py-1 border border-[#B3B3B3] bg-[#121212] text-white rounded text-sm focus:ring-[#1DB954] focus:border-[#1DB954]"
                         min="2020"
                         max="2030"
                       />
@@ -185,7 +185,7 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
                         name="unitsConsumed"
                         value={editForm.unitsConsumed}
                         onChange={handleEditChange}
-                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        className="w-full px-2 py-1 border border-[#B3B3B3] bg-[#121212] text-white rounded text-sm focus:ring-[#1DB954] focus:border-[#1DB954]"
                         step="0.01"
                         min="0"
                       />
@@ -196,26 +196,25 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
                         name="amount"
                         value={editForm.amount}
                         onChange={handleEditChange}
-                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        className="w-full px-2 py-1 border border-[#B3B3B3] bg-[#121212] text-white rounded text-sm focus:ring-[#1DB954] focus:border-[#1DB954]"
                         step="0.01"
-                        min="0"
                       />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ${(editForm.amount / editForm.unitsConsumed).toFixed(3)}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#B3B3B3]">
+                      ₹{(editForm.amount / editForm.unitsConsumed).toFixed(3)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <button
                         onClick={() => handleSaveEdit(bill.id)}
                         disabled={loading}
-                        className="text-green-600 hover:text-green-900 disabled:opacity-50"
+                        className="text-[#1DB954] hover:text-[#1ED760] disabled:opacity-50"
                       >
                         Save
                       </button>
                       <button
                         onClick={handleCancelEdit}
                         disabled={loading}
-                        className="text-gray-600 hover:text-gray-900 disabled:opacity-50"
+                        className="text-[#B3B3B3] hover:text-white disabled:opacity-50"
                       >
                         Cancel
                       </button>
@@ -223,37 +222,37 @@ const EnhancedBillsTable = ({ bills, onBillsUpdated }) => {
                   </>
                 ) : (
                   <>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                       <span className="flex items-center">
                         <span className="mr-2">{utilityIcons[bill.utilityType]}</span>
                         {bill.utilityType.charAt(0).toUpperCase() + bill.utilityType.slice(1)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                       {bill.month}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#B3B3B3]">
                       {bill.year}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#B3B3B3]">
                       {bill.unitsConsumed.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ${bill.amount.toFixed(2)}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      ₹{bill.amount.toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ${(bill.amount / bill.unitsConsumed).toFixed(3)}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#B3B3B3]">
+                      ₹{(bill.amount / bill.unitsConsumed).toFixed(3)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <button
                         onClick={() => handleEdit(bill)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-[#1DB954] hover:text-[#1ED760]"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(bill.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-500 hover:text-red-400"
                       >
                         Delete
                       </button>

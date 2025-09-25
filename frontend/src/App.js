@@ -5,6 +5,7 @@ import EnhancedBillsTable from './components/EnhancedBillsTable';
 import UsageChart from './components/UsageChart';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import ChatBot from './components/ChatBot';
+import AuthPage from './components/AuthPage';
 
 function App() {
   const [bills, setBills] = useState([]);
@@ -12,6 +13,7 @@ function App() {
   const [analytics, setAnalytics] = useState(null);
   const [costSummary, setCostSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const fetchBills = async () => {
     try {
@@ -63,16 +65,32 @@ function App() {
     await refreshData();
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#191414] to-[#121212] flex items-center justify-center">
+        <AuthPage onLogin={() => setIsAuthenticated(true)} />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#191414]">
       <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Utility Bill Tracker
-          </h1>
-          <p className="text-gray-600">
-            Track your energy consumption and get personalized tips
-          </p>
+        <header className="text-center mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">
+              Utility Bill Tracker
+            </h1>
+            <p className="text-[#B3B3B3]">
+              Track your energy consumption and get personalized tips
+            </p>
+          </div>
+          <button
+              onClick={() => setIsAuthenticated(false)}
+              className="bg-[#1DB954] hover:bg-[#1ED760] text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Logout
+            </button>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">

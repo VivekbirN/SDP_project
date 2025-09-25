@@ -93,7 +93,7 @@ const UsageChart = ({ trends, bills }) => {
                 <YAxis yAxisId="right" orientation="right" stroke="#6B7280" />
                 <Tooltip 
                   formatter={(value, name) => {
-                    const unit = name.includes('Amount') ? '$' : 'kWh';
+                    const unit = name.includes('Amount') ? '₹' : 'kWh';
                     const label = name.includes('Amount') ? 'Amount' : 'Units';
                     return [`${unit}${value.toFixed(2)}`, `${label}`];
                   }}
@@ -134,7 +134,7 @@ const UsageChart = ({ trends, bills }) => {
                 <YAxis yAxisId="right" orientation="right" stroke="#10B981" />
                 <Tooltip 
                   formatter={(value, name) => [
-                    name === 'units' ? `${value} kWh` : `$${value.toFixed(2)}`,
+                    name === 'units' ? `${value} kWh` : `₹${value.toFixed(2)}`,
                     name === 'units' ? 'Units Consumed' : 'Amount'
                   ]}
                 />
@@ -155,7 +155,7 @@ const UsageChart = ({ trends, bills }) => {
                   stroke="#10B981" 
                   strokeWidth={2}
                   dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-                  name="Amount ($)"
+                  name="Amount (₹)"
                 />
               </>
             )}

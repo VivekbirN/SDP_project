@@ -7,7 +7,7 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
 
   if (!analytics || !costSummary) {
     return (
-      <div className="text-center text-gray-500 py-8">
+      <div className="text-center text-[#B3B3B3] py-8">
         No analytics data available. Add some bills to see insights!
       </div>
     );
@@ -66,11 +66,11 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
       {/* Utility Filter */}
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex items-center space-x-2">
-          <label className="text-sm font-medium text-gray-700">Filter by utility:</label>
+          <label className="text-sm font-medium text-white">Filter by utility:</label>
           <select
             value={selectedUtility}
             onChange={(e) => setSelectedUtility(e.target.value)}
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-1 border border-[#B3B3B3] bg-[#121212] text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
           >
             <option value="all">All Utilities</option>
             <option value="electricity">⚡ Electricity</option>
@@ -80,42 +80,42 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
         </div>
         
         <div className="flex items-center space-x-2">
-          <label className="text-sm font-medium text-gray-700">High usage threshold:</label>
+          <label className="text-sm font-medium text-white">High usage threshold:</label>
           <input
             type="number"
             value={threshold}
             onChange={(e) => setThreshold(e.target.value)}
             placeholder="Auto-calculated"
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+            className="px-3 py-1 border border-[#B3B3B3] bg-[#121212] text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#1DB954] w-32"
           />
-          <span className="text-xs text-gray-500">units</span>
+          <span className="text-xs text-[#B3B3B3]">units</span>
         </div>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="text-sm font-semibold text-blue-800">Average Consumption</h3>
-          <p className="text-xl font-bold text-blue-600">
+        <div className="bg-[#121212] p-4 rounded-lg border border-[#B3B3B3]">
+          <h3 className="text-sm font-semibold text-[#1DB954]">Average Consumption</h3>
+          <p className="text-xl font-bold text-white">
             {parseFloat(filteredAnalytics.averageConsumption).toFixed(1)}
-            <span className="text-sm font-normal ml-1">units</span>
+            <span className="text-sm font-normal ml-1 text-[#B3B3B3]">units</span>
           </p>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg">
-          <h3 className="text-sm font-semibold text-green-800">Average Amount</h3>
-          <p className="text-xl font-bold text-green-600">
-            ${parseFloat(filteredAnalytics.averageAmount).toFixed(2)}
+        <div className="bg-[#121212] p-4 rounded-lg border border-[#B3B3B3]">
+          <h3 className="text-sm font-semibold text-[#1DB954]">Average Amount</h3>
+          <p className="text-xl font-bold text-white">
+            ₹${parseFloat(filteredAnalytics.averageAmount).toFixed(2)}
           </p>
         </div>
-        <div className="bg-purple-50 p-4 rounded-lg">
-          <h3 className="text-sm font-semibold text-purple-800">Total Bills</h3>
-          <p className="text-xl font-bold text-purple-600">
+        <div className="bg-[#121212] p-4 rounded-lg border border-[#B3B3B3]">
+          <h3 className="text-sm font-semibold text-[#1DB954]">Total Bills</h3>
+          <p className="text-xl font-bold text-white">
             {filteredAnalytics.totalBills}
           </p>
         </div>
-        <div className="bg-red-50 p-4 rounded-lg">
-          <h3 className="text-sm font-semibold text-red-800">High Usage Alerts</h3>
-          <p className="text-xl font-bold text-red-600">
+        <div className="bg-[#121212] p-4 rounded-lg border border-[#B3B3B3]">
+          <h3 className="text-sm font-semibold text-[#1DB954]">High Usage Alerts</h3>
+          <p className="text-xl font-bold text-white">
             {filteredAnalytics.highConsumptionAlerts?.length || 0}
           </p>
         </div>
@@ -124,8 +124,8 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
       {/* Charts */}
       {costBreakdownData.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Cost Breakdown by Utility</h3>
+          <div className="bg-[#121212] p-6 rounded-lg border border-[#B3B3B3]">
+            <h3 className="text-lg font-semibold text-white mb-4">Cost Breakdown by Utility</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -142,22 +142,22 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => [`$${value.toFixed(2)}`, 'Amount']} />
+                <Tooltip formatter={(value) => [`₹${value.toFixed(2)}`, 'Amount']} />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Utility Comparison</h3>
+          <div className="bg-[#121212] p-6 rounded-lg border border-[#B3B3B3]">
+            <h3 className="text-lg font-semibold text-white mb-4">Utility Comparison</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={utilityComparisonData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="utility" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#B3B3B3" />
+                <XAxis dataKey="utility" stroke="#FFFFFF" />
+                <YAxis stroke="#FFFFFF" />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="totalAmount" fill="#8884d8" name="Total Amount ($)" />
-                <Bar dataKey="averageAmount" fill="#82ca9d" name="Average Amount ($)" />
+                <Bar dataKey="totalAmount" fill="#1DB954" name="Total Amount (₹)" />
+                <Bar dataKey="averageAmount" fill="#1ED760" name="Average Amount (₹)" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -166,25 +166,25 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
 
       {/* High Consumption Alerts */}
       {filteredAnalytics.highConsumptionAlerts && filteredAnalytics.highConsumptionAlerts.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-red-800 mb-4">⚠️ High Consumption Alerts</h3>
+        <div className="bg-[#121212] border border-[#B3B3B3] rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-[#1ED760] mb-4">⚠️ High Consumption Alerts</h3>
           <div className="space-y-3">
             {filteredAnalytics.highConsumptionAlerts.map((alert, index) => (
-              <div key={index} className="bg-white p-4 rounded border border-red-100">
+              <div key={index} className="bg-[#191414] p-4 rounded border border-[#B3B3B3]">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="font-medium text-red-800">
+                    <p className="font-medium text-[#1ED760]">
                       {utilityIcons[alert.utilityType]} {alert.utilityType.charAt(0).toUpperCase() + alert.utilityType.slice(1)}
                     </p>
-                    <p className="text-sm text-red-600">
-                      {alert.month} {alert.year}: {alert.unitsConsumed} units (${alert.amount.toFixed(2)})
+                    <p className="text-sm text-[#B3B3B3]">
+                      {alert.month} {alert.year}: {alert.unitsConsumed} units (₹{alert.amount.toFixed(2)})
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-red-700">
+                    <p className="text-sm font-medium text-[#1ED760]">
                       {alert.percentageAboveThreshold}% above threshold
                     </p>
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-[#B3B3B3]">
                       Threshold: {alert.threshold.toFixed(1)} units
                     </p>
                   </div>
@@ -196,23 +196,23 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
       )}
 
       {/* Recent Bills */}
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Bills ({selectedUtility === 'all' ? 'All' : selectedUtility.charAt(0).toUpperCase() + selectedUtility.slice(1)})</h3>
+      <div className="bg-[#121212] rounded-lg p-6 border border-[#B3B3B3]">
+        <h3 className="text-lg font-semibold text-white mb-4">Recent Bills ({selectedUtility === 'all' ? 'All' : selectedUtility.charAt(0).toUpperCase() + selectedUtility.slice(1)})</h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-100">
+          <table className="min-w-full divide-y divide-[#B3B3B3]">
+            <thead className="bg-[#191414]">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Utility</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Month</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Units</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cost/Unit</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-[#B3B3B3] uppercase">Utility</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-[#B3B3B3] uppercase">Month</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-[#B3B3B3] uppercase">Units</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-[#B3B3B3] uppercase">Amount</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-[#B3B3B3] uppercase">Cost/Unit</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[#121212] divide-y divide-[#B3B3B3]">
               {filteredBills.slice(0, 5).map((bill) => (
                 <tr key={bill.id}>
-                  <td className="px-4 py-2 text-sm">
+                  <td className="px-4 py-2 text-sm text-white">
                     <span className="flex items-center">
                       <span className="mr-2">
                         {bill.utilityType === 'electricity' && '⚡'}
@@ -222,16 +222,16 @@ const AnalyticsDashboard = ({ analytics, costSummary, bills }) => {
                       {bill.utilityType.charAt(0).toUpperCase() + bill.utilityType.slice(1)}
                     </span>
                   </td>
-                  <td className="px-4 py-2 text-sm">{bill.month} {bill.year}</td>
-                  <td className="px-4 py-2 text-sm">{bill.unitsConsumed.toLocaleString()}</td>
-                  <td className="px-4 py-2 text-sm">${bill.amount.toFixed(2)}</td>
-                  <td className="px-4 py-2 text-sm">${(bill.amount / bill.unitsConsumed).toFixed(3)}</td>
+                  <td className="px-4 py-2 text-sm text-white">{bill.month} {bill.year}</td>
+                  <td className="px-4 py-2 text-sm text-white">{bill.unitsConsumed.toLocaleString()}</td>
+                  <td className="px-4 py-2 text-sm text-white">₹{bill.amount.toFixed(2)}</td>
+                  <td className="px-4 py-2 text-sm text-white">₹{(bill.amount / bill.unitsConsumed).toFixed(3)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           {filteredBills.length === 0 && (
-            <p className="text-center text-gray-500 py-4">No bills found for the selected utility.</p>
+            <p className="text-center text-[#B3B3B3] py-4">No bills found for the selected utility.</p>
           )}
         </div>
       </div>

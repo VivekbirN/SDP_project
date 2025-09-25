@@ -49,7 +49,7 @@ const BillForm = ({ onBillAdded }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="utilityType" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="utilityType" className="block text-sm font-medium text-white mb-1">
             Utility Type
           </label>
           <select
@@ -58,7 +58,7 @@ const BillForm = ({ onBillAdded }) => {
             value={formData.utilityType}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-[#B3B3B3] bg-[#121212] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
           >
             {utilityTypes.map(type => (
               <option key={type.value} value={type.value}>
@@ -69,7 +69,7 @@ const BillForm = ({ onBillAdded }) => {
         </div>
 
         <div>
-          <label htmlFor="month" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="month" className="block text-sm font-medium text-white mb-1">
             Month
           </label>
           <select
@@ -78,7 +78,7 @@ const BillForm = ({ onBillAdded }) => {
             value={formData.month}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-[#B3B3B3] bg-[#121212] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
           >
             <option value="">Select Month</option>
             {months.map(month => (
@@ -89,7 +89,7 @@ const BillForm = ({ onBillAdded }) => {
       </div>
 
       <div>
-        <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="year" className="block text-sm font-medium text-white mb-1">
           Year
         </label>
         <input
@@ -101,13 +101,13 @@ const BillForm = ({ onBillAdded }) => {
           min="2020"
           max="2030"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-[#B3B3B3] bg-[#121212] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
           placeholder="2024"
         />
       </div>
 
       <div>
-        <label htmlFor="unitsConsumed" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="unitsConsumed" className="block text-sm font-medium text-white mb-1">
           Units Consumed (kWh)
         </label>
         <input
@@ -119,14 +119,14 @@ const BillForm = ({ onBillAdded }) => {
           min="0"
           step="0.01"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-[#B3B3B3] bg-[#121212] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
           placeholder="250.5"
         />
       </div>
 
       <div>
-        <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-          Amount ($)
+        <label htmlFor="amount" className="block text-sm font-medium text-white mb-1">
+          Amount (₹)
         </label>
         <input
           type="number"
@@ -137,7 +137,7 @@ const BillForm = ({ onBillAdded }) => {
           min="0"
           step="0.01"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-[#B3B3B3] bg-[#121212] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
           placeholder="125.00"
         />
       </div>
@@ -145,7 +145,7 @@ const BillForm = ({ onBillAdded }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+        className="w-full bg-[#1DB954] text-white py-2 px-4 rounded-md hover:bg-[#1ED760] focus:outline-none focus:ring-2 focus:ring-[#1DB954] disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
       >
         {loading ? 'Adding Bill...' : 'Add Bill'}
       </button>
