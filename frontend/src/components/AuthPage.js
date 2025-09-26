@@ -3,10 +3,12 @@ import './AuthPage.css';
 
 const AuthPage = ({ onLogin }) => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [loginData, setLoginData] = useState({ clubId: '', password: '' });
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
+  });
   const [registerData, setRegisterData] = useState({ 
-    clubName: '', 
-    clubId: '', 
+    username: '', 
     email: '', 
     password: '', 
     confirmPassword: '' 
@@ -30,26 +32,91 @@ const AuthPage = ({ onLogin }) => {
     });
   };
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login submitted:', loginData);
-    // Simple demo authentication - in production, this would call your backend
-    if (loginData.clubId && loginData.password) {
-      onLogin();
+    
+    try {
+      // Prepare login data (using email field)
+      const loginCredentials = {
+        email: loginData.email,
+        password: loginData.password
+      };
+      
+      console.log('Logging in user:', loginCredentials);
+      
+      // Call the backend login API
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginCredentials),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('Login successful:', data);
+        alert('Login successful!');
+        onLogin(); // Call the parent callback to set authenticated state
+      } else {
+        alert(data.message || 'Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed. Please check your connection and try again.');
     }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     if (registerData.password !== registerData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    console.log('Register submitted:', registerData);
-    // Simple demo registration - in production, this would call your backend
-    if (registerData.clubName && registerData.clubId && registerData.email && registerData.password) {
-      alert('Registration successful! Please login with your credentials.');
-      togglePanel(false);
+    if (registerData.password.length < 6) {
+      alert('Password must be at least 6 characters long!');
+      return;
+    }
+    
+    try {
+      // Prepare data for backend API (map username to name, email to email)
+      const userData = {
+        name: registerData.username,
+        email: registerData.email, // Use the actual email field
+        password: registerData.password
+      };
+      
+      console.log('Registering user:', userData);
+      
+      // Call the backend registration API
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('Registration successful! Please login with your credentials.');
+        // Clear form
+        setRegisterData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
+        // Switch to login panel
+        togglePanel(false);
+      } else {
+        alert(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Registration failed. Please check your connection and try again.');
     }
   };
 
@@ -58,20 +125,12 @@ const AuthPage = ({ onLogin }) => {
       <div className="form-container sign-up-container">
         <form onSubmit={handleRegisterSubmit}>
           <h1>Create Account</h1>
-          <span>Register your club with CampusConnect</span>
+          <span>Register</span>
           <input
             type="text"
-            name="clubName"
-            placeholder="Club Name"
-            value={registerData.clubName}
-            onChange={handleRegisterChange}
-            required
-          />
-          <input
-            type="text"
-            name="clubId"
-            placeholder="Club ID"
-            value={registerData.clubId}
+            name="username"
+            placeholder="Username"
+            value={registerData.username}
             onChange={handleRegisterChange}
             required
           />
@@ -106,12 +165,12 @@ const AuthPage = ({ onLogin }) => {
       <div className="form-container sign-in-container">
         <form onSubmit={handleLoginSubmit}>
           <h1>Sign In</h1>
-          <span>Welcome back, Club Admins!</span>
+          <span>Welcome back</span>
           <input
-            type="text"
-            name="clubId"
-            placeholder="Club ID"
-            value={loginData.clubId}
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={loginData.email}
             onChange={handleLoginChange}
             required
           />
@@ -132,12 +191,12 @@ const AuthPage = ({ onLogin }) => {
         <div className="overlay">
           <div className="overlay-panel overlay-left">
             <h1>Already Registered?</h1>
-            <p>Welcome back, Club Admins! Login with your Club ID and password to manage your activities.</p>
+            <p>Welcome back</p>
             <button onClick={() => togglePanel(false)}>Login</button>
           </div>
           <div className="overlay-panel overlay-right">
-            <h1>New Club on Campus?</h1>
-            <p>Register your club with CampusConnect to easily organize events, share resources, and engage with students!</p>
+            <h1>New here?</h1>
+            <p>Register with usto easily organize your bills!</p>
             <button onClick={() => togglePanel(true)}>Register</button>
           </div>
         </div>

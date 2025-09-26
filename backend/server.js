@@ -1,16 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { connectDB } = require('./db');
+const User = require('./models/User');
+const Bill = require('./models/Bill');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Connect to MongoDB
+connectDB();
+
 app.use(cors());
 app.use(bodyParser.json());
 
-let bills = [];
-
-app.post('/bill', (req, res) => {
+app.post('/bill', async (req, res) => {
   try {
     const { month, year, unitsConsumed, amount, utilityType } = req.body;
     
@@ -23,38 +27,33 @@ app.post('/bill', (req, res) => {
       return res.status(400).json({ error: 'Invalid utility type. Must be electricity, water, or gas' });
     }
 
-    const newBill = {
-      id: Date.now().toString(),
+    const newBill = new Bill({
       month,
       year: parseInt(year),
       unitsConsumed: parseFloat(unitsConsumed),
       amount: parseFloat(amount),
-      utilityType,
-      createdAt: new Date()
-    };
+      utilityType: utilityType.toLowerCase()
+    });
 
-    bills.push(newBill);
-    res.status(201).json(newBill);
+    const savedBill = await newBill.save();
+    res.status(201).json(savedBill);
   } catch (error) {
+    console.error('Error saving bill:', error);
     res.status(500).json({ error: 'Failed to save bill' });
   }
 });
 
-app.get('/bills', (req, res) => {
+app.get('/bills', async (req, res) => {
   try {
-    const sortedBills = bills.sort((a, b) => {
-      if (a.year !== b.year) {
-        return b.year - a.year;
-      }
-      return new Date(`${a.month} 1, 2000`) - new Date(`${b.month} 1, 2000`);
-    });
-    res.json(sortedBills);
+    const bills = await Bill.find({}).sort({ year: -1, month: 1 });
+    res.json(bills);
   } catch (error) {
+    console.error('Error retrieving bills:', error);
     res.status(500).json({ error: 'Failed to retrieve bills' });
   }
 });
 
-app.put('/bill/:id', (req, res) => {
+app.put('/bill/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { month, year, unitsConsumed, amount, utilityType } = req.body;
@@ -68,59 +67,63 @@ app.put('/bill/:id', (req, res) => {
       return res.status(400).json({ error: 'Invalid utility type. Must be electricity, water, or gas' });
     }
 
-    const billIndex = bills.findIndex(bill => bill.id === id);
-    if (billIndex === -1) {
+    const updatedBill = await Bill.findByIdAndUpdate(
+      id,
+      {
+        month,
+        year: parseInt(year),
+        unitsConsumed: parseFloat(unitsConsumed),
+        amount: parseFloat(amount),
+        utilityType: utilityType.toLowerCase()
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBill) {
       return res.status(404).json({ error: 'Bill not found' });
     }
 
-    bills[billIndex] = {
-      ...bills[billIndex],
-      month,
-      year: parseInt(year),
-      unitsConsumed: parseFloat(unitsConsumed),
-      amount: parseFloat(amount),
-      utilityType,
-      updatedAt: new Date()
-    };
-
-    res.json(bills[billIndex]);
+    res.json(updatedBill);
   } catch (error) {
+    console.error('Error updating bill:', error);
     res.status(500).json({ error: 'Failed to update bill' });
   }
 });
 
-app.delete('/bill/:id', (req, res) => {
+app.delete('/bill/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const billIndex = bills.findIndex(bill => bill.id === id);
+    const deletedBill = await Bill.findByIdAndDelete(id);
     
-    if (billIndex === -1) {
+    if (!deletedBill) {
       return res.status(404).json({ error: 'Bill not found' });
     }
 
-    bills.splice(billIndex, 1);
     res.json({ message: 'Bill deleted successfully' });
   } catch (error) {
+    console.error('Error deleting bill:', error);
     res.status(500).json({ error: 'Failed to delete bill' });
   }
 });
 
-app.get('/trends', (req, res) => {
+app.get('/trends', async (req, res) => {
   try {
     const { utilityType } = req.query;
-    let filteredBills = bills;
+    let query = {};
     
     if (utilityType) {
       const validUtilityTypes = ['electricity', 'water', 'gas'];
       if (!validUtilityTypes.includes(utilityType)) {
         return res.status(400).json({ error: 'Invalid utility type' });
       }
-      filteredBills = bills.filter(bill => bill.utilityType === utilityType);
+      query.utilityType = utilityType;
     }
+
+    const bills = await Bill.find(query);
 
     const monthlyData = {};
     
-    filteredBills.forEach(bill => {
+    bills.forEach(bill => {
       const key = `${bill.year}-${bill.month}`;
       if (!monthlyData[key]) {
         monthlyData[key] = {
@@ -158,11 +161,12 @@ app.get('/trends', (req, res) => {
 
     res.json(trends);
   } catch (error) {
+    console.error('Error retrieving trends:', error);
     res.status(500).json({ error: 'Failed to retrieve trends' });
   }
 });
 
-app.post('/chat', (req, res) => {
+app.post('/chat', async (req, res) => {
   try {
     const { message } = req.body;
     
@@ -170,7 +174,7 @@ app.post('/chat', (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const latestBill = bills.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+    const latestBill = await Bill.findOne().sort({ createdAt: -1 });
     const messageLower = message.toLowerCase();
     
     let botReply = '';
@@ -200,16 +204,20 @@ app.post('/chat', (req, res) => {
     else if (messageLower.includes('bill') || messageLower.includes('usage')) {
       if (latestBill) {
         const utilitySpecific = messageLower.includes('electricity') || messageLower.includes('water') || messageLower.includes('gas');
-        let billsToShow = bills;
+        let billsToShow;
         
         if (utilitySpecific) {
+          let utilityType;
           if (messageLower.includes('electricity')) {
-            billsToShow = bills.filter(bill => bill.utilityType === 'electricity');
+            utilityType = 'electricity';
           } else if (messageLower.includes('water')) {
-            billsToShow = bills.filter(bill => bill.utilityType === 'water');
+            utilityType = 'water';
           } else if (messageLower.includes('gas')) {
-            billsToShow = bills.filter(bill => bill.utilityType === 'gas');
+            utilityType = 'gas';
           }
+          billsToShow = await Bill.find({ utilityType });
+        } else {
+          billsToShow = await Bill.find({});
         }
 
         if (billsToShow.length > 0) {
@@ -267,20 +275,22 @@ app.post('/chat', (req, res) => {
   }
 });
 
-app.get('/analytics', (req, res) => {
+app.get('/analytics', async (req, res) => {
   try {
     const { utilityType, threshold } = req.query;
-    let filteredBills = bills;
+    let query = {};
     
     if (utilityType) {
       const validUtilityTypes = ['electricity', 'water', 'gas'];
       if (!validUtilityTypes.includes(utilityType)) {
         return res.status(400).json({ error: 'Invalid utility type' });
       }
-      filteredBills = bills.filter(bill => bill.utilityType === utilityType);
+      query.utilityType = utilityType;
     }
 
-    if (filteredBills.length === 0) {
+    const bills = await Bill.find(query);
+
+    if (bills.length === 0) {
       return res.json({
         averageConsumption: 0,
         averageAmount: 0,
@@ -291,17 +301,17 @@ app.get('/analytics', (req, res) => {
     }
 
     // Calculate average consumption and amount
-    const totalUnits = filteredBills.reduce((sum, bill) => sum + bill.unitsConsumed, 0);
-    const totalAmount = filteredBills.reduce((sum, bill) => sum + bill.amount, 0);
-    const averageConsumption = totalUnits / filteredBills.length;
-    const averageAmount = totalAmount / filteredBills.length;
+    const totalUnits = bills.reduce((sum, bill) => sum + bill.unitsConsumed, 0);
+    const totalAmount = bills.reduce((sum, bill) => sum + bill.amount, 0);
+    const averageConsumption = totalUnits / bills.length;
+    const averageAmount = totalAmount / bills.length;
 
     // High consumption alerts
     const highConsumptionThreshold = threshold ? parseFloat(threshold) : averageConsumption * 1.5;
-    const highConsumptionAlerts = filteredBills
+    const highConsumptionAlerts = bills
       .filter(bill => bill.unitsConsumed > highConsumptionThreshold)
       .map(bill => ({
-        id: bill.id,
+        id: bill._id,
         month: bill.month,
         year: bill.year,
         utilityType: bill.utilityType,
@@ -313,7 +323,7 @@ app.get('/analytics', (req, res) => {
 
     // Utility breakdown
     const utilityBreakdown = {};
-    filteredBills.forEach(bill => {
+    bills.forEach(bill => {
       if (!utilityBreakdown[bill.utilityType]) {
         utilityBreakdown[bill.utilityType] = {
           totalUnits: 0,
@@ -337,23 +347,24 @@ app.get('/analytics', (req, res) => {
     res.json({
       averageConsumption: averageConsumption.toFixed(2),
       averageAmount: averageAmount.toFixed(2),
-      totalBills: filteredBills.length,
+      totalBills: bills.length,
       highConsumptionAlerts,
       utilityBreakdown,
       thresholdUsed: highConsumptionThreshold
     });
   } catch (error) {
+    console.error('Error retrieving analytics:', error);
     res.status(500).json({ error: 'Failed to retrieve analytics' });
   }
 });
 
-app.get('/cost-summary', (req, res) => {
+app.get('/cost-summary', async (req, res) => {
   try {
     const costSummary = {};
     const utilityTypes = ['electricity', 'water', 'gas'];
     
-    utilityTypes.forEach(utility => {
-      const utilityBills = bills.filter(bill => bill.utilityType === utility);
+    for (const utility of utilityTypes) {
+      const utilityBills = await Bill.find({ utilityType: utility });
       costSummary[utility] = {
         totalAmount: utilityBills.reduce((sum, bill) => sum + bill.amount, 0),
         totalUnits: utilityBills.reduce((sum, bill) => sum + bill.unitsConsumed, 0),
@@ -361,11 +372,78 @@ app.get('/cost-summary', (req, res) => {
         averageAmount: utilityBills.length > 0 ? utilityBills.reduce((sum, bill) => sum + bill.amount, 0) / utilityBills.length : 0,
         averageUnits: utilityBills.length > 0 ? utilityBills.reduce((sum, bill) => sum + bill.unitsConsumed, 0) / utilityBills.length : 0
       };
-    });
+    }
 
     res.json(costSummary);
   } catch (error) {
+    console.error('Error retrieving cost summary:', error);
     res.status(500).json({ error: 'Failed to retrieve cost summary' });
+  }
+});
+
+// User Authentication Routes
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    
+    // Validate required fields
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email, and password are required' });
+    }
+    
+    // Validate email format (basic validation)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Please enter a valid email address' });
+    }
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists with this email' });
+    }
+    
+    // Create new user
+    const user = new User({ name, email, password });
+    await user.save();
+    
+    res.status(201).json({
+      message: 'User registered successfully',
+      user: user.getPublicProfile()
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Server error during registration' });
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    // Find user by email (include password field for comparison)
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Check password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    res.json({
+      message: 'Login successful',
+      user: user.getPublicProfile()
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Failed to login' });
   }
 });
 
